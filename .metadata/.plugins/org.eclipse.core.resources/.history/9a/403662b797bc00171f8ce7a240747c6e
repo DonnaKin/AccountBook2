@@ -1,0 +1,101 @@
+package accountBook;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+
+public class MCTotal extends JFrame{
+	public MCTotal(String id, String month){
+		DB_Input ip = new DB_Input();
+		int cnt = Integer.valueOf(ip.productSelect("getCnt", ("select count(*) from calender_info_"+id+" where date like '%"+month+"%'")));
+		String[] inOrOut = ip.productSelectArray("getInOrOut", ("select inOrout from Calender_info_"+id+" where date like '%"+month+"%'"));
+		String[] Money = ip.productSelectArray("getMoney", "select money from calender_info_"+id+" where date like '%"+month+"%'");
+		int inMoney = 0;
+		int outMoney = 0;
+		String balance = ip.productSelect("getBalance", "select balance from user_info where id="+id);
+		for(int i=0;i<cnt;i++){
+			if(inOrOut[i].equals("¼öÀÔ")){
+				inMoney += Integer.valueOf(Money[i]);
+			}else{outMoney += Integer.valueOf(Money[i]);}
+		}
+		
+		JPanel MCpanel = new JPanel();
+		MCpanel.setLayout(null);
+		
+		JLabel MTitleL = new JLabel(month+"\uC6D4 \uCD1D \uACB0\uC0B0");
+		MTitleL.setBounds(115, 12, 262, 90);
+		MTitleL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		MCpanel.add(MTitleL);
+		
+		JLabel MtalOutL = new JLabel("\uC6D4\uBCC4 \uCD1D \uC9C0\uCD9C");
+		MtalOutL.setBounds(32, 231, 128, 67);
+		MtalOutL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		MCpanel.add(MtalOutL);
+		
+		JLabel MtalInL = new JLabel("\uC6D4\uBCC4 \uCD1D \uC218\uC785");
+		MtalInL.setBounds(32, 125, 128, 60);
+		MtalInL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		MCpanel.add(MtalInL);
+		
+		JLabel MtalBalanceL = new JLabel("\uC6D4\uBCC4 \uACB0\uC0B0\uAE08\uC561");
+		MtalBalanceL.setBounds(32, 356, 140, 60);
+		MtalBalanceL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		MCpanel.add(MtalBalanceL);
+		
+		setTitle("¿ùº°°á»ê");
+		getContentPane().add(MCpanel);
+		
+		JLabel MtalIn = new JLabel("+ "+String.valueOf(inMoney));
+		MtalIn.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		MtalIn.setForeground(Color.BLUE);
+		MtalIn.setBackground(Color.WHITE);
+		MtalIn.setBounds(229, 114, 212, 83);
+		MCpanel.add(MtalIn);
+		
+		JLabel MtalOut = new JLabel("- "+String.valueOf(outMoney));
+		MtalOut.setForeground(Color.RED);
+		MtalOut.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		MtalOut.setBackground(Color.WHITE);
+		MtalOut.setBounds(229, 221, 212, 83);
+		MCpanel.add(MtalOut);
+		
+		JLabel MtalBalance = new JLabel("= "+String.valueOf(inMoney-outMoney));
+		MtalBalance.setForeground(new Color(46, 139, 87));
+		MtalBalance.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		MtalBalance.setBackground(Color.WHITE);
+		MtalBalance.setBounds(229, 353, 212, 83);
+		MCpanel.add(MtalBalance);
+		
+		JLabel balancTxt = new JLabel("\uC794\uC561");
+		balancTxt.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		balancTxt.setBounds(69, 477, 58, 60);
+		MCpanel.add(balancTxt);
+		
+		JLabel balanceTxt = new JLabel(balance);
+		balanceTxt.setForeground(new Color(0, 0, 0));
+		balanceTxt.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		balanceTxt.setBackground(Color.WHITE);
+		balanceTxt.setBounds(229, 465, 212, 83);
+		MCpanel.add(balanceTxt);
+		
+		JButton ShareBtn = new JButton("\uACF5\uC720\uD558\uAE30");
+		ShareBtn.setBounds(363, 564, 105, 27);
+		ShareBtn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					new FBShare();
+			}
+		});
+		MCpanel.add(ShareBtn);
+		
+		setSize(500,650);
+		setLocation(450,100);
+		setVisible(true);
+	}
+}

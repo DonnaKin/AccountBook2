@@ -1,0 +1,17 @@
+package accountBook;
+
+import java.awt.Component;
+import java.awt.Image;
+import java.io.IOException;
+
+public class LoadImageApp extends Component {   
+	Image img = null;
+	
+	public LoadImageApp(){
+		try{
+			File sourceimage = new File(".//img//logo.png");
+		}catch(IOException e){
+			
+		}
+	}
+}

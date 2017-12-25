@@ -1,0 +1,54 @@
+package accountBook;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+public class LoadImageApp extends Component {   
+	  private String filename;
+	    private Image img = null;
+	    private BufferedImage bi = null;
+	    public LoadImageApp(String filename){
+	        this.filename = filename;
+	         
+	        //1. 원본이미지 로딩
+	        this.img = Toolkit.getDefaultToolkit().createImage(filename);
+	        MediaTracker tracker = new MediaTracker(this);
+	        tracker.addImage(img, 0);
+	        try{
+	            tracker.waitForID(0);
+	        }catch(InterruptedException e){
+	            e.printStackTrace();
+	        }
+	        int w = img.getWidth(null);
+	        int h = img.getHeight(null);
+	         
+	        //2. 이미지 Resizing
+	        Image scaledImage = img.getScaledInstance(w/2, h/2, Image.SCALE_DEFAULT);
+	        tracker.addImage(scaledImage, 0);
+	        try{
+	            tracker.waitForID(0);
+	        }catch(InterruptedException e){
+	            e.printStackTrace();
+	        }
+	         
+	        //3. BufferedImage를 생성한 후 Graphics로 그리기
+	        this.bi = new BufferedImage(w/2, h/2, BufferedImage.TYPE_INT_RGB);
+	        Graphics g = this.bi.getGraphics();
+	        g.drawImage(scaledImage, 0, 0, this);
+	        g.dispose();
+	    }
+	    public void paint(Graphics g){
+	        if(this.img != null && this.bi != null){
+	            g.drawImage(img, 10, 50, this);
+	            g.drawImage(bi, 330, 60, this);
+	        }
+	    }
+}

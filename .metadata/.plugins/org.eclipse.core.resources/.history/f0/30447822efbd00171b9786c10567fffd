@@ -1,0 +1,196 @@
+package accountBook;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Color;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+
+class UserInfo_gui extends JFrame {
+	UserInfo ui;
+	JPanel jp;
+	String id;
+	Image img = null;
+	File sourceimage;
+	public UserInfo_gui(String id){
+		this.id = id;
+		ui = new UserInfo(id);
+		jp = new JPanel();
+		jp.setLayout(null);
+		createUserInfo();
+	}
+	public void createUserInfo(){
+		JLabel titleL = new JLabel("¸¶ÀÌÆäÀÌÁö");
+		titleL.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 50));
+		titleL.setBounds(68, 129, 250, 58);
+		jp.add(titleL);
+		
+		getContentPane().add(jp);
+		
+		JPanel menubar = new JPanel();
+		menubar.setBackground(Color.WHITE);
+		menubar.setBounds(0, 0, 1482, 71);
+		menubar.setLayout(null);
+		
+		JButton home = new JButton("È¨");
+		home.setBounds(95, 12, 173, 47);
+		home.setForeground(new Color(51, 102, 153));
+		home.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		home.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();try {
+					new Calender(id);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		menubar.add(home);
+		
+		JButton pounder = new JButton("È¸ºñÃ¼Å©");
+		pounder.setForeground(new Color(51, 102, 153));
+		pounder.setBounds(483, 12, 173, 47);
+		pounder.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		pounder.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+					dispose();new Recall(id);
+			}
+		});
+		menubar.add(pounder);
+		
+		JButton calculator = new JButton("´õÄ¡ÆäÀÌ°è»ê±â");
+		calculator.setBounds(870, 12, 173, 47);
+		calculator.setForeground(new Color(51, 102, 153));
+		calculator.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		calculator.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();	new Calculator(id);
+			}
+		});
+		menubar.add(calculator);
+		
+		JButton mypage = new JButton("¸¶ÀÌÆäÀÌÁö");
+		mypage.setBounds(1231, 12, 173, 47);
+		mypage.setForeground(new Color(51, 102, 153));
+		mypage.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		mypage.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();new UserInfo_gui(id);
+			}
+		});
+		menubar.add(mypage);
+		
+		jp.add(menubar);
+		
+		JLabel ClubInfo = new JLabel("\uB3D9\uC544\uB9AC \uC815\uBCF4");
+		ClubInfo.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 30));
+		ClubInfo.setBounds(749, 201, 183, 35);
+		jp.add(ClubInfo);
+		
+		JPanel UserInfoP = new JPanel();
+		UserInfoP.setBackground(SystemColor.activeCaption);
+		UserInfoP.setBounds(103, 321, 405, 208);
+		jp.add(UserInfoP);
+		UserInfoP.setLayout(null);
+		
+		JLabel UserIdL = new JLabel(ui.Idresult);
+		UserIdL.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 17));
+		UserIdL.setBounds(160, 31, 168, 33);
+		UserInfoP.add(UserIdL);
+		
+		JLabel UserClubL = new JLabel(ui.Clubresult);
+		UserClubL.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 17));
+		UserClubL.setBounds(160, 86, 213, 33);
+		UserInfoP.add(UserClubL);
+		
+		JLabel lblId = new JLabel("ID");
+		lblId.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		lblId.setBounds(41, 37, 62, 18);
+		UserInfoP.add(lblId);
+		
+		JLabel lblPass = new JLabel("CLUB");
+		lblPass.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		lblPass.setBounds(41, 91, 62, 18);
+		UserInfoP.add(lblPass);
+		
+		JLabel balanceL = new JLabel(ui.Balresult);
+		balanceL.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 17));
+		balanceL.setBounds(160, 140, 198, 33);
+		UserInfoP.add(balanceL);
+		
+		JLabel lblBalance = new JLabel("Balance");
+		lblBalance.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		lblBalance.setBounds(41, 145, 75, 18);
+		UserInfoP.add(lblBalance);
+		
+		JLabel label = new JLabel("\uC778\uC6D0 :");
+		label.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 25));
+		label.setBounds(759, 259, 77, 29);
+		jp.add(label);
+		
+		JLabel ClubCnt = new JLabel(String.valueOf(ui.length));
+		ClubCnt.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 25));
+		ClubCnt.setBounds(842, 259, 90, 29);
+		jp.add(ClubCnt);
+		
+		JPanel ClubCntP = new JPanel();
+		ClubCntP.setBackground(SystemColor.info);
+		ClubCntP.setBounds(749, 309, 673, 502);
+		jp.add(ClubCntP);
+		ClubCntP.setLayout(null);
+		
+		JButton changeIdBtn = new JButton("\uC815\uBCF4\uC218\uC815");
+		changeIdBtn.setBounds(248, 614, 123, 46);
+		jp.add(changeIdBtn);
+		changeIdBtn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				Join j = new Join(id,1,ui.Clubresult, ui.Idresult,ui.Passresult,ui.Memberresult);
+			}
+		});
+		changeIdBtn.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 17));
+		
+		int x=70, y=100, j=53, k=50;
+		
+		JLabel mem[] = new JLabel[ui.length];
+		try {
+			sourceimage = new File(".//img//btnUser.png");
+			img = ImageIO.read(sourceimage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        JLabel imgL = new JLabel(new ImageIcon(img));
+        ClubCntP.add(imgL);
+		for(int i=0 ; i<ui.length ; i++){
+			mem[i] = new JLabel(ui.member[i]);
+			mem[i].setBounds(x, y, 82, 41);
+			ClubCntP.add(mem[i]);
+			if((x += j) >500){x=14;y+=k;}
+			if(y> 499) y=14;
+		}
+		
+		setLocation(250,50);
+		setSize(1500,900);
+		setVisible(true);
+	}
+}
+

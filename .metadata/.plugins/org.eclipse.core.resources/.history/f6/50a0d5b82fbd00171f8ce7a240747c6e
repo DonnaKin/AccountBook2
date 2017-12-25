@@ -1,0 +1,84 @@
+package accountBook;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+
+public class AccountSever extends Thread{
+	static String send_msgWhat="";
+	static String send_msgQuaery="";
+	static String get_msg="";
+	static int sendFlag = 0;
+	static int getFlag =0;
+	static int cnt = 0;
+	static int num = 0;
+	
+	public void sendMessege(int num, int cnt,String send_msgWhat, String send_msgQuaery) throws IOException{
+		this.send_msgWhat = send_msgWhat;
+		this.send_msgQuaery = send_msgQuaery;
+		this.cnt = cnt;
+		this.num = num;
+		this.sendFlag = 1;
+		this.run();
+		System.out.println("클라이언트 가동");
+	}
+	public void sendMessege(int num, int cnt,String send_msgQuaery) throws IOException{
+		this.send_msgQuaery = send_msgQuaery;
+		this.cnt = cnt;
+		this.num = num;
+		this.sendFlag = 1;
+		this.run();
+		System.out.println("클라이언트 가동");
+	}
+	
+	public String getMessege() throws IOException{
+		return get_msg;
+	}
+	
+	public void run() {
+		InetAddress ia = null;
+		try { 
+			ia = InetAddress.getByName("127.0.0.1");
+			Socket so = new Socket(ia, 5000);
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			BufferedReader br = new BufferedReader(new InputStreamReader(so.getInputStream()));
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(so.getOutputStream()));
+		
+			getFlag =0;
+			synchronized(this){
+				System.out.println(sendFlag);
+				if(sendFlag == 1){
+					getFlag =0;
+					System.out.println("보낼 메세지 : "+num+" "+cnt+" "+send_msgWhat+" "+send_msgQuaery);
+					bw.write(num+"\n");
+					bw.flush();
+					bw.write(cnt+"\n");
+					bw.flush();
+					bw.write(send_msgWhat+"\n");
+					bw.flush();
+					bw.write(send_msgQuaery+"\n");
+					bw.flush();
+					
+					System.out.println(">>>>서버의 메시지를 기다리는 중<<<<");
+					get_msg = br.readLine(); 
+					System.out.println("보낸 주소 : "+so.getInetAddress());
+					System.out.println("보낸 내용 : "+get_msg);
+					getFlag =1;
+					sendFlag =0;
+				}
+			}
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+}

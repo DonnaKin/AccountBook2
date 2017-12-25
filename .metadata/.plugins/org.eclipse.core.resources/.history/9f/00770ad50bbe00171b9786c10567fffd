@@ -1,0 +1,222 @@
+package accountBook;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+
+import java.awt.Color;
+import java.awt.Font;
+
+
+public class Recall extends JFrame implements ActionListener{
+	JButton btnNewButton,home,pounder,calculator,mypage,delete,add;
+	//JPanel list;
+	int count=0;
+	JPanel detail[];
+	JPanel panel;
+	JScrollPane scrollPane;
+	JPanel list;
+	JLabel lblDb,date,money;
+	JFrame fs;
+	JTextField percent[],tf_title,tf_money;
+	JRadioButton check[];
+	JTextArea textArea[];
+	JButton btn_delete[],ok;
+	String id;
+	DB_Input dbinput = new DB_Input();
+	static public String[] Member;
+	static public String MemberResult;
+	static public int length;
+	
+	public Recall(String id){
+		super("µ¿¾Æ¸® È¸°è ÀåºÎ");
+		getContentPane().setBackground(Color.WHITE);
+		this.id = id;
+		setSize(1500,900);
+		getContentPane().setLayout(null);
+		
+		//¸Þ´º¹Ù
+		JPanel menubar = new JPanel();
+		
+		JButton home = new JButton("È¨");
+		home.setBounds(95, 12, 173, 47);
+		home.setForeground(new Color(51, 102, 153));
+		home.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		home.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();try {
+					new Calender(id);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		menubar.add(home);
+		
+		JButton pounder = new JButton("È¸ºñÃ¼Å©");
+		pounder.setForeground(new Color(51, 102, 153));
+		pounder.setBounds(483, 12, 173, 47);
+		pounder.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		pounder.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+					dispose(); new Recall(id);
+			}
+		});
+		menubar.add(pounder);
+		
+		calculator = new JButton("´õÄ¡ÆäÀÌ°è»ê±â");
+		calculator.setForeground(new Color(51, 102, 153));
+		calculator.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		calculator.setBounds(870, 12,  173, 47);
+		calculator.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+					dispose(); new Calculator(id);
+			}
+		});
+		menubar.add(calculator);
+		
+		mypage = new JButton("¸¶ÀÌÆäÀÌÁö");
+		mypage.setForeground(new Color(51, 102, 153));
+		mypage.setBounds(1231, 12,  173, 47);
+		mypage.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+					dispose(); new UserInfo_gui(id);
+			}
+		});
+		mypage.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 20));
+		menubar.add(mypage);
+		
+		menubar.setBackground(Color.WHITE);
+		menubar.setBounds(0, 0, 1482, 71);
+		menubar.setLayout(null);
+		getContentPane().add(menubar);
+		
+		//Á¦¸ñ ÆÐ³Î
+		JPanel info = new JPanel();
+		info.setBackground(Color.WHITE);
+		info.setBounds(0, 70, 1482, 91);
+		getContentPane().add(info);
+		info.setLayout(null);
+		
+		//Á¦¸ñ
+		JLabel collect = new JLabel("È°µ¿ºñ È¸¼ö³»¿ª");
+		collect.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 40));
+		collect.setBounds(12, 10, 338, 69);
+		info.add(collect);
+		
+		//»èÁ¦ ¹× Ãß°¡ ¹öÆ°
+		add = new JButton("Ãß°¡");
+		add.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 15));
+		add.setBounds(364, 24, 77, 36);
+		add.addActionListener(this);
+		info.add(add);
+		
+		JPanel infoPanel = new JPanel();
+		JPanel[] insidePanel;
+		JLabel[] titleL;
+		JLabel[] dateL;
+		JLabel[] moneyL;
+		JRadioButton[] checkMember;
+		int tosidePx,tosidePy=80,j=200;
+		int cnt = Integer.valueOf(dbinput.productSelect("getCnt", "select count(*) from pounding_"+id)); 
+		if(cnt > 0){
+			insidePanel = new JPanel[cnt];
+			titleL = new JLabel[cnt];
+			dateL = new JLabel[cnt];
+			moneyL = new JLabel[cnt];
+			checkMember = new JRadioButton[cnt];
+			for(int i=1; i <= cnt; i++){
+				String qeurytitle = "select title from pounding_"+id+" where cnt="+i;
+				String qeurydate = "select date from pounding_"+id+" where cnt="+i;
+				String qeurymoney = "select money from pounding_"+" where cnt="+i;
+				String qeurycheckMember = "select checkMember from pounding_"+" where cnt="+i;
+				String[] titleArray = dbinput.productSelectArray("getTitle", qeurytitle);
+				String[] dateArray = dbinput.productSelectArray("getDate", qeurydate);
+				String[] moneyArray = dbinput.productSelectArray("getMoney", qeurymoney);
+				String[] checkMemberArray = dbinput.productSelectArray("getCheckMember", qeurycheckMember);
+				
+				insidePanel[i] = new JPanel();
+				insidePanel[i].setLayout(null);
+				
+				titleL[i] = new JLabel(titleArray[i]);
+				titleL[i].setBounds(0, 0, 310, 10);
+				titleL[i].setFont(new Font("³ª´®°íµñ", Font.PLAIN, 15));
+				titleL[i].setBackground(Color.ORANGE);
+				
+				dateL[i] = new JLabel(titleArray[i]);
+				dateL[i].setBounds(0, 0, 310, 10);
+				dateL[i].setFont(new Font("³ª´®°íµñ", Font.PLAIN, 15));
+				dateL[i].setBackground(Color.ORANGE);
+				
+				moneyL[i] = new JLabel(titleArray[i]);
+				moneyL[i].setBounds(0, 0, 310, 10);
+				moneyL[i].setFont(new Font("³ª´®°íµñ", Font.PLAIN, 15));
+				moneyL[i].setBackground(Color.ORANGE);
+				
+				checkMember[i] = new JRadioButton(titleArray[i]);
+				checkMember[i].setBounds(0, 0, 310, 10);
+				checkMember[i].setFont(new Font("³ª´®°íµñ", Font.PLAIN, 15));
+				checkMember[i].setBackground(Color.ORANGE);
+				
+				insidePanel[i].setBounds(0, tosidePy, 310, 150);
+				insidePanel[i].setFont(new Font("³ª´®°íµñ", Font.PLAIN, 15));
+				insidePanel[i].setBackground(Color.white);
+				insidePanel[i].setVisible(true);
+				infoPanel.add(insidePanel[i]);
+			}
+		}
+
+		infoPanel.setBackground(Color.WHITE);
+		infoPanel.setBounds(0, 173, 1482, 680);
+		getContentPane().add(infoPanel);
+		info.setVisible(true);
+		setVisible(true);
+	}
+	
+	 public void actionPerformed(ActionEvent e) {
+		 if(e.getSource()==home){
+			  dispose();
+			  try {
+				new Calender(id);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		  }else if(e.getSource()==calculator){
+			  dispose();
+			  new Calculator(id);
+		  }else if(e.getSource()==mypage){
+			  dispose();
+			  new UserInfo_gui(id);
+		  }else if(e.getSource()==add){
+			  new Recall_Input(id);
+		  }
+	 }
+	 
+//	 public void getClub_member(String id){
+//		DB_Input dbInput = new DB_Input();
+//		String queryClubmember = "select club_member from user_info where id = "+id;
+//			
+//			MemberResult = dbInput.productSelect("getClubMember",queryClubmember);
+//			StringTokenizer st = new StringTokenizer(MemberResult,",");
+//			length = st.countTokens();
+//			Member = new String[length];
+//			for(int i=0;i<length;i++){
+//				Member[i] = st.nextToken();
+//			}
+//	 }
+}

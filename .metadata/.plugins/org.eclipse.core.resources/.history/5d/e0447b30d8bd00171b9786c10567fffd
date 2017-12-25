@@ -1,0 +1,7 @@
+package accountBook;
+
+import java.awt.Component;
+
+public class LoadImageApp extends Component {   
+	
+}

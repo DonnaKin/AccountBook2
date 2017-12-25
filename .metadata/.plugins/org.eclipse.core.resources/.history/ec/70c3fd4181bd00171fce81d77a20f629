@@ -1,0 +1,53 @@
+package accountBook;
+
+import java.sql.SQLException;
+
+//장부 입출력
+public class Input {
+	String id; // id값 넣기
+	private int balance;
+	
+	//생성자 함수에 id 값 받아오기
+	public Input(String id){
+		this.id  = id;
+	}
+	
+	//수입&지출 값 입력 후 DB메서드를부르는 메서드
+	public int account(String p_y, String p_m, String p_d, String p_inOrout, int p_money, String using) throws SQLException{
+		DB_Input dbInput = new DB_Input();
+		int flag=0;
+		//내역 저장
+		String queryinsertStr = "INSERT INTO calender_info_"+id+"(date, inOrout, money, p_use) VALUES (" +p_y+""+p_m+""+p_d+ ",'"+p_inOrout+"',"+p_money+",'"+using+"')";
+		dbInput.productInsert(queryinsertStr);
+		System.out.println("Input Class flag="+flag);
+		
+		//잔고 저장
+		String queryStr ="SELECT BALANCE FROM USER_INFO WHERE ID ="+id;
+		balance = Integer.valueOf(dbInput.productSelect("getBalance",queryStr));
+		System.out.println(balance);
+		if(p_inOrout == "지출"){
+			balance -= p_money;
+			System.out.println("지출저장");	
+		}
+		else if(p_inOrout == "수입"){
+			balance += p_money;
+			System.out.println("수입저장");
+		}
+		System.out.println(balance);
+		//잔고 업데이트 == 잔고가 0이하면 안되게 걸리는 기능 추가하기!
+		String queryUpStr="UPDATE user_info SET balance="+balance+" WHERE id="+id;
+		System.out.println(queryUpStr);
+		dbInput.productUpdateDelete(queryUpStr);
+		
+		//new Calender(id);
+		System.out.println("Input Class return flag="+flag);
+		return flag;
+	}
+	
+	
+	//영수증 저장 메서드
+	public void resuitGallery(char resuit){
+		System.out.println("영수증 저장");
+	}
+}
+

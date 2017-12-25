@@ -1,0 +1,285 @@
+package AccountBook;
+
+import java.awt.BorderLayout;
+import java.awt.Choice;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+
+import java.awt.Color;
+
+import accountBook.AccountBook_Calculator;
+import accountBook.AccountBook_Calender;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.StringTokenizer;
+
+import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.ResultSetMetaData;
+
+
+public class Recall<JDatePanelImpl> extends JFrame implements ActionListener{
+	JButton btnNewButton,home,pounder,calculator,mypage,delete,add;
+	//JPanel list;
+	int count=0;
+	JPanel detail[];
+	JPanel panel;
+	JScrollPane scrollPane;
+	JPanel list;
+	JLabel lblDb,date,money;
+	JFrame fs;
+	JTextField percent[],tf_title,tf_money;
+	JRadioButton check[];
+	JTextArea textArea[];
+	JButton btn_delete[],ok;
+	String id;
+	DB_Input dbinput = new DB_Input();
+	static public String[] Member;
+	static public String MemberResult;
+	static public int length;
+	
+	public Recall(String id){
+		super("동아리 회계 장부");
+		getContentPane().setBackground(Color.WHITE);
+		this.id = id;
+		setSize(1500,900);
+		getContentPane().setLayout(null);
+		
+		//메뉴바
+		JPanel menubar = new JPanel();
+		
+		JButton home = new JButton("홈");
+		home.setBounds(95, 12, 173, 47);
+		home.setForeground(new Color(51, 102, 153));
+		home.setFont(new Font("나눔고딕", Font.PLAIN, 20));
+		home.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();try {
+					new Calender(id);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		menubar.add(home);
+		
+		JButton pounder = new JButton("회비체크");
+		pounder.setForeground(new Color(51, 102, 153));
+		pounder.setBounds(483, 12, 173, 47);
+		pounder.setFont(new Font("나눔고딕", Font.PLAIN, 20));
+		pounder.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+					dispose(); new Recall(id);
+			}
+		});
+		menubar.add(pounder);
+		menubar.setBackground(Color.WHITE);
+		menubar.setBounds(0, 0, 1482, 71);
+		menubar.setLayout(null);
+		getContentPane().add(menubar);
+		
+		//제목 패널
+		JPanel info = new JPanel();
+		info.setBackground(Color.WHITE);
+		info.setBounds(0, 70, 1482, 91);
+		getContentPane().add(info);
+		info.setLayout(null);
+		
+		//제목
+		JLabel collect = new JLabel("활동비 회수내역");
+		collect.setFont(new Font("나눔고딕", Font.PLAIN, 40));
+		collect.setBounds(12, 10, 338, 69);
+		info.add(collect);
+		
+		//삭제 및 추가 버튼
+		add = new JButton("추가");
+		add.setFont(new Font("나눔고딕", Font.PLAIN, 15));
+		add.setBounds(364, 24, 77, 36);
+		add.addActionListener(this);
+		info.add(add);
+		
+		JPanel infoPanel = new JPanel();
+		infoPanel.setBackground(Color.WHITE);
+		infoPanel.setBounds(0, 173, 1482, 680);
+		getContentPane().add(infoPanel);
+		
+		dbinput.productSelect("getCnt", queryString)
+		
+		setVisible(true);
+	}
+	
+	 public void actionPerformed(ActionEvent e) {
+		 if(e.getSource()==home){
+			  dispose();
+			  new Calender(id);
+		  }else if(e.getSource()==calculator){
+			  dispose();
+			  new Calculator(id);
+		  }else if(e.getSource()==mypage){
+			  dispose();
+			  //new AccountBook_Mypage();->너가 만든 마이페이지 생성해줘!!
+		  }else if(e.getSource()==add){
+			  new Recall_Input(id);
+		  }
+	 }
+	 
+	 
+
+ public void getClub_member(String id){
+	DB_Input dbInput = new DB_Input();
+	String queryClubmember = "select club_member from user_info where id = "+id;
+		
+		MemberResult = dbInput.productSelect("getClubMember",queryClubmember);
+		StringTokenizer st = new StringTokenizer(MemberResult,",");
+		length = st.countTokens();
+		Member = new String[length];
+		for(int i=0;i<length;i++){
+			Member[i] = st.nextToken();
+		}
+	}
+
+ 
+	public static void main(String[] args) {
+		new Recall("1");
+	}
+	
+}
+
+	list = new JPanel();
+list.setBounds(20, 103, 1322, 628);
+list.setLayout(null);
+getContentPane().add(list);
+count++;
+list.removeAll();
+for(int i=0;i<count;i++){  
+	//자세한 활동 내역
+    System.out.println(count);
+	detail = null;
+	detail = new JPanel[count];
+	detail[i] = new JPanel();
+	detail[i].addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		fs = new JFrame("상세내역");
+		fs.getContentPane().setLayout(null);
+		panel = new JPanel();
+		panel.setBounds(12, 10, 314, 100);
+		String getsql = "select * from pounding_create where num ="+1+";";
+		dbinput.productSelect("getDate",getsql);
+		lblDb = new JLabel("DB에서 불러올 내용");
+		panel.add(lblDb);
+		fs.getContentPane().add(panel);
+				
+		scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane.setBounds(12, 150, 314, 253);
+				
+		for(int i=0;i<length;i++){ //length = 동아리 멤버 수
+			check = new JRadioButton[length];
+			check[i] = new JRadioButton(Member[i]); //member이름별로 라디오버튼 생성
+			check[i].setBounds(30, 4+(i*30), 200, 20);
+			scrollPane.add(check[i]);
+		}
+		ok = new JButton("확인");
+		ok.setBounds(110, 450, 100, 20);
+		ok.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==ok){
+				 	fs.dispose();
+				}
+			}
+		});
+		
+		fs.getContentPane().add(scrollPane);
+		fs.getContentPane().add(ok);
+		fs.setVisible(true);
+		fs.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+			  fs.setVisible(false);
+			  fs.dispose();
+			 }
+		});
+		fs.setSize(360, 530);
+		fs.setLocation(10, 3);
+	}
+});
+			detail[i].setForeground(Color.WHITE);
+			detail[i].setBounds(12+(i*400), 10, 390, 221);
+			detail[i].setBorder(BorderFactory.createLineBorder(Color.GREEN));
+			detail[i].setLayout(null);
+			textArea = new JTextArea[count];
+			textArea[i] = new JTextArea();
+			textArea[i].setEnabled(false);
+			textArea[i].setBounds(12+i, 10, 283, 146);
+			detail[i].add(textArea[i]);
+			percent = new JTextField[count];
+			percent[i] = new JTextField();
+			percent[i].setBackground(Color.PINK);
+			percent[i].setEnabled(false);
+			percent[i].setBounds(12+i, 158, 366, 53);
+			detail[i].add(percent[i]);
+			btn_delete = new JButton[count];
+			btn_delete[i] = new JButton("삭제");
+			btn_delete[i].setBounds(308+i, 10, 70, 39);
+			btn_delete[i].addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					if(e.getSource()==btn_delete){
+						 for(int i=0;i<count;i++) {
+							 System.out.println(count);
+							 detail[i].setVisible(false);
+							 String delete = "delete from pounding_create where num = "+i+";";
+							 dbinput.productUpdateDelete(delete);
+						 }
+					}
+				}
+			});
+			detail[i].add(btn_delete[i]);
+			detail[i].revalidate();
+			detail[i].repaint();
+			list.add(detail[i]);
+			list.revalidate();
+			list.repaint();
+	}
+}
+}
+});
+
+
+jf_input.getContentPane().add(input);
+jf_input.setVisible(true);
+jf_input.setSize(350,500);
+jf_input.setLocation(15, 4);
+}

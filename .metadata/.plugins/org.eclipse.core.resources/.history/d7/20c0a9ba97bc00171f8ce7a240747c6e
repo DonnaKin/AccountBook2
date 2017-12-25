@@ -1,0 +1,101 @@
+package accountBook;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.Color;
+import javax.swing.JButton;
+
+public class YCTotal extends JFrame{
+	public YCTotal(String id, String year){
+		DB_Input ip = new DB_Input();
+		int cnt = Integer.valueOf(ip.productSelect("getCnt", ("select count(*) from calender_info_"+id+" where date like '"+year+"%'")));
+		String[] inOrOut = ip.productSelectArray("getInOrOut", ("select inOrout from Calender_info_"+id+" where date like '"+year+"%'"));
+		String[] Money = ip.productSelectArray("getMoney", "select money from calender_info_"+id+" where date like '"+year+"%'");
+		int inMoney = 0;
+		int outMoney = 0;
+		String balance = ip.productSelect("getBalance", "select balance from user_info where id="+id);
+		for(int i=0;i<cnt;i++){
+			if(inOrOut[i].equals("¼öÀÔ")){
+				inMoney += Integer.valueOf(Money[i]);
+			}else{outMoney += Integer.valueOf(Money[i]);}
+		}
+		
+		JPanel YCpanel = new JPanel();
+		YCpanel.setLayout(null);
+		
+		JLabel YTitleL = new JLabel(year+"\uB144 \uCD1D \uACB0\uC0B0");
+		YTitleL.setBounds(98, 12, 290, 90);
+		YTitleL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		YCpanel.add(YTitleL);
+		
+		JLabel YtalOutL = new JLabel("¿¬º° ÃÑ ÁöÃâ");
+		YtalOutL.setBounds(32, 231, 128, 67);
+		YtalOutL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		YCpanel.add(YtalOutL);
+		
+		JLabel YtalInL = new JLabel("¿¬º° ÃÑ ¼öÀÔ");
+		YtalInL.setBounds(32, 125, 128, 60);
+		YtalInL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		YCpanel.add(YtalInL);
+		
+		JLabel YtalBalanceL = new JLabel("¿¬º° °á»ê±Ý¾×");
+		YtalBalanceL.setBounds(32, 356, 140, 60);
+		YtalBalanceL.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		YCpanel.add(YtalBalanceL);
+		
+		setTitle("¿¬º°°á»ê");
+		getContentPane().add(YCpanel);
+		
+		JLabel YtalIn = new JLabel("+ "+String.valueOf(inMoney));
+		YtalIn.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		YtalIn.setForeground(Color.BLUE);
+		YtalIn.setBackground(Color.WHITE);
+		YtalIn.setBounds(229, 114, 212, 83);
+		YCpanel.add(YtalIn);
+		
+		JLabel YtalOut = new JLabel("- "+String.valueOf(outMoney));
+		YtalOut.setForeground(Color.RED);
+		YtalOut.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		YtalOut.setBackground(Color.WHITE);
+		YtalOut.setBounds(229, 221, 212, 83);
+		YCpanel.add(YtalOut);
+		
+		JLabel YtalBalance = new JLabel("= "+String.valueOf(inMoney-outMoney));
+		YtalBalance.setForeground(new Color(46, 139, 87));
+		YtalBalance.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		YtalBalance.setBackground(Color.WHITE);
+		YtalBalance.setBounds(229, 353, 212, 83);
+		YCpanel.add(YtalBalance);
+		
+		JLabel balancTxt = new JLabel("\uC794\uC561");
+		balancTxt.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 20));
+		balancTxt.setBounds(69, 477, 58, 60);
+		YCpanel.add(balancTxt);
+		
+		JLabel balanceTxt = new JLabel(balance);
+		balanceTxt.setForeground(new Color(0, 0, 0));
+		balanceTxt.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 40));
+		balanceTxt.setBackground(Color.WHITE);
+		balanceTxt.setBounds(229, 465, 212, 83);
+		YCpanel.add(balanceTxt);
+		
+		JButton Sharebtn = new JButton("\uACF5\uC720\uD558\uAE30");
+		Sharebtn.setBounds(363, 564, 105, 27);
+		Sharebtn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					new FBShare();
+			}
+		});
+		YCpanel.add(Sharebtn);
+		
+		setSize(500,650);
+		setLocation(450,100);
+		setVisible(true);
+	}
+}

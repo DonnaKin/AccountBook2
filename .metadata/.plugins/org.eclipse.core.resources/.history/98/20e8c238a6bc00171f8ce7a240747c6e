@@ -1,0 +1,50 @@
+package accountBook;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+
+public class TCPClientExam2 {
+	static String send_msgWhat;
+	static String send_msgQuaery;
+	public TCPClientExam2(String send_msgWhat, String send_msgQuaery){
+		this.send_msgWhat = send_msgWhat;
+		this.send_msgQuaery = send_msgQuaery;
+	}
+	public String Client() throws IOException {
+		InetAddress ia = null;
+		try { 
+			ia = InetAddress.getByName("127.0.0.1");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Socket so = new Socket(ia, 5000);
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(so.getInputStream()));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(so.getOutputStream()));
+		
+		while(true){
+			System.out.println("보낼 메세지 : "+send_msgWhat+" "+send_msgQuaery);
+			bw.write(send_msgWhat+"\n"+send_msgQuaery+"\n");
+			bw.flush();
+			
+			System.out.println(">>>>서버의 메시지를 기다리는 중<<<<");
+			get_msg = br.readLine();
+			
+			System.out.println("보낸 주소 : "+so.getInetAddress());
+			System.out.println("보낸 내용 : "+get_msg);
+			if(get_msg.equals("exit")){
+				so.close();
+				bw.close();
+				System.exit(0);
+			}
+		}
+	}
+
+}

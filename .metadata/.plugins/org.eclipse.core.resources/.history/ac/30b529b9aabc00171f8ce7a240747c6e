@@ -1,0 +1,22 @@
+package accountBook;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+
+public class TCPClientExam2 {
+	
+	public void setMessege(String send_msgWhat, String send_msgQuaery) throws IOException{
+		
+	}
+	
+	public String getMessege() throws IOException {
+		
+		return get_msg;
+	}
+
+}
